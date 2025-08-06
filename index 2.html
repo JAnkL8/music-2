@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spiel Lobby</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('https://via.placeholder.com/1920x1080?text=Lobby+Background');
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    .lobby-container {
+      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 5vh;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 60%;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    input[type="file"] {
+      margin-bottom: 10px;
+    }
+
+    button.join {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #f0c040;
+      color: black;
+      cursor: pointer;
+    }
+
+    .start-button {
+      margin-top: 20px;
+    }
+
+    .start-button img {
+      width: 200px;
+      cursor: pointer;
+    }
+
+    ul.player-list {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    ul.player-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    ul.player-list img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hintergrundmusik (Platzhalter-Datei) -->
+  <audio id="lobbyMusic" src="Lobby.mp3" autoplay loop></audio>
+
+  <div class="lobby-container">
+    <h1>Spiel Lobby</h1>
+    <input type="text" id="playerName" placeholder="Dein Name...">
+    <br>
+    <input type="file" id="playerImage" accept="image/*">
+    <br>
+    <button class="join" onclick="joinLobby()">Beitreten</button>
+
+    <div class="start-button">
+      <img src="https://via.placeholder.com/200x80?text=Start" alt="Spiel Starten" onclick="startGame()">
+    </div>
+
+    <ul class="player-list" id="playerList">
+    </ul>
+  </div>
+
+  <script>
+    const players = [];
+
+    function joinLobby() {
+      const nameInput = document.getElementById('playerName');
+      const imageInput = document.getElementById('playerImage');
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        alert("Bitte gib einen Namen ein.");
+        return;
+      }
+
+      const file = imageInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const player = {
+          name: name,
+          image: event.target.result
+        };
+        players.push(player);
+        updatePlayerList();
+        nameInput.value = '';
+        imageInput.value = '';
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        const player = {
+          name: name,
+          image: 'https://via.placeholder.com/40'
+        };
+        players.push(player);
+        updatePlayerList();
+        nameInput.value = '';
+      }
+    }
+
+    function updatePlayerList() {
+      const list = document.getElementById('playerList');
+      list.innerHTML = '';
+      players.forEach(p => {
+        const li = document.createElement('li');
+        li.innerHTML = `<img src="${p.image}" alt="Profilbild"> <span>${p.name}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    function startGame() {
+      if (players.length === 0) {
+        alert("Es müssen Spieler beitreten, bevor das Spiel starten kann.");
+        return;
+      }
+      alert("Spiel startet...");
+    }
+  </script>
+</body>
+</html>
